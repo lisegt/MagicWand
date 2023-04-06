@@ -21,6 +21,48 @@ from pytrack import Pytrack
 from network import WLAN
 from mqtt import MQTTClient
 
+time.sleep(2)
+gc.enable()
+
+# setup rtc
+rtc = machine.RTC()
+rtc.ntp_sync("pool.ntp.org")
+utime.sleep_ms(750)
+print('\nRTC Set from NTP to UTC:', rtc.now())
+utime.timezone(7200)
+print('Adjusted from UTC to EST timezone', utime.localtime(), '\n')
+
+py = Pytrack()
+l76 = L76GNSS(py, timeout=30)
+acc = LIS2HH12()
+
+def sub_cb(topic, msg):
+   print("found")
+   print(msg)
+
+wlan = WLAN(mode=WLAN.STA)
+#wlan.connect("yourwifinetwork", auth=(WLAN.WPA2, "wifipassword"), timeout=5000)
+wlan.connect(ssid='WiFi-Paul', auth=(WLAN.WPA2, "sqoualala"))
+
+while not wlan.isconnected():
+    #machine.idle()
+    print(".",end="")
+    time.sleep(2)
+print("Connected to WiFi\n")
+
+# Déclaration des topics
+mqtt_topic_gestion_lumiere = "paulort31@laposte.net/gestion_lumiere"
+mqtt_topic_gestion_televiseur = "paulort31@laposte.net/gestion_televiseur"
+mqtt_topic_gestion_chaine = "paulort31@laposte.net/gestion_chaine"
+
+client = MQTTClient("device_id", "maqiatto.com",user="paulort31@laposte.net", password="auzeville31", port=1883)
+
+client.set_callback(sub_cb)
+client.connect()
+print("connected")
+
+
+
 # Variables pour la navigation web
 # browser = webdriver.Firefox()
 # browser.get("http://www.worldslongestwebsite.com")
@@ -71,7 +113,6 @@ def on_roll_message(client, userdata, msg):
     roll = float(msg.payload)
 
     # action à effectuer
-
     update_navigateur()
 
 # réception d'un message sur le topic roll
@@ -121,8 +162,22 @@ def on_lumiere_message(client, userdata, msg):
     acceleration_x = float(msg.payload)
     print(msg.topic+" "+str(msg.payload))
 
-    # action à effectuer 
-    changeEtatLumiere(acceleration_x)
+    # action à effectuer
+    global etatLumiere
+    if acceleration_x > 0.5 and etatLumiere == False:
+        client.publish(topic=mqtt_topic_gestion_lumiere, msg="ON")
+        etatLumiere = True
+        print("Lumiere Allumee")
+
+    elif acceleration_x < -0.5 and etatLumiere == True:
+        client.publish(topic=mqtt_topic_gestion_lumiere, msg="OFF")
+        etatLumiere = False
+        print("Lumiere Eteinte")
+
+    time.sleep(2)
+
+
+    #changeEtatLumiere(acceleration_x)
 
 
 def changeEtatLumiere(accel_x):
