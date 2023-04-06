@@ -2,7 +2,7 @@ from selenium import webdriver
 import socket
 import time
 
-HOST = '192.168.197.195'  # The server's hostname or IP address
+HOST = '172.20.10.2'  # The server's hostname or IP address
 PORT = 1024  # The port used by the server
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
