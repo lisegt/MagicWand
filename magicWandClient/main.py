@@ -169,28 +169,11 @@ def on_lumiere_message(client, userdata, msg):
         etatLumiere = True
         print("Lumiere Allumee")
 
-    elif acceleration_x < -0.5 and etatLumiere == True:
+    elif acceleration_x > 0.5 and etatLumiere == True:
         client.publish(topic=mqtt_topic_gestion_lumiere, msg="OFF")
         etatLumiere = False
         print("Lumiere Eteinte")
 
-    time.sleep(2)
-
-
-    #changeEtatLumiere(acceleration_x)
-
-
-def changeEtatLumiere(accel_x):
-    global etatLumiere
-    if accel_x > 0.5 and etatLumiere == False:
-        etatLumiere = True
-        print("Lumiere Allumee")
-        pycom.rgbled(blanc)
-
-    elif accel_x < -0.5 and etatLumiere == True:
-        etatLumiere = False
-        print("Lumiere Eteinte")
-        pycom.rgbled(ledOFF)
     time.sleep(2)
 
 # réception d'un message sur le topic de televiseur
@@ -198,50 +181,38 @@ def on_televiseur_message(client, userdata, msg):
     acceleration_y = float(msg.payload)
 
     # action à effectuer
-    changeEtatTele(acceleration_y)
-
-def changeEtatTele(accel_y):
     global etatTele
-    if accel_y > 0.5 and etatTele == False:
+    if acceleration_y > 0.5 and etatTele == False:
+        client.publish(topic=mqtt_topic_gestion_televiseur, msg="ON")
         etatTele = True
         print("Tele Allumee")
-        pycom.rgbled(rouge)
 
-    elif accel_y < -0.5 and etatTele == True:
+    elif acceleration_y > 0.5 and etatTele == True:
+        client.publish(topic=mqtt_topic_gestion_televiseur, msg="OFF")
         etatTele = False
         print("Tele Eteinte")
-        pycom.rgbled(ledOFF)
+
     time.sleep(2)
     
 # réception d'un message sur le topic de chaine
 def on_chaine_message(client, userdata, msg):
     acceleration_z = float(msg.payload)
 
-    # action à effectuer
-    changerChaine(acceleration_z)
-
-def changerChaine(accel_z):
     global index
     if etatTele == True:
-        current_index = index % len(liste)
-        if accel_z > 0.5:
-            index += 1
-            if index == len(liste):
-                # Revenir au début de la liste si on atteint la fin
-                index = 0
+
+        if acceleration_z > 0.5:
+            client.publish(topic=mqtt_topic_gestion_televiseur, msg="Monter")
             print("Chaine +1")  
             
-        elif accel_z < -0.5:
-            index -= 1
-            if index < 0:
-                # Revenir à la fin de la liste si on atteint le début
-                index = len(liste) - 1 
+        elif acceleration_z < -0.5:
+            client.publish(topic=mqtt_topic_gestion_televiseur, msg="Descendre")
             print("Chaine -1")
-
-        pycom.rgbled(liste[current_index])
         time.sleep(2)
     else:
         print("Veuillez allumer le téléviseur")
+
+
 
 # Initilisation du client MQTT
 client = mqtt.Client()
