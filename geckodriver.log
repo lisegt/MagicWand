@@ -1,0 +1,13 @@
+1680767002201	geckodriver	INFO	Listening on 127.0.0.1:54708
+1680767002685	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/69/_f88qbrj019f4xjr0sp7sknh0000gn/T/rust_mozprofileHp31za"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1680767003273	Marionette	INFO	Marionette enabled
+1680767003485	Marionette	INFO	Listening on port 54747
+console.error: "Warning: unrecognized command line flag -remote-allow-hosts\n"
+Read port: 54747
+WebDriver BiDi listening on ws://127.0.0.1:54709
+1680767003674	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /var/folders/69/_f88qbrj019f4xjr0sp7sknh0000gn/T/rust_mozprofileHp31za/search.json.mozlz4", (void 0)))
+DevTools listening on ws://127.0.0.1:54709/devtools/browser/7c787228-e659-4e0f-9da9-b586d98d737a
+1680767072478	Marionette	INFO	Stopped listening on port 54747

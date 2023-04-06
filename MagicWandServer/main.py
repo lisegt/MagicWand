@@ -8,7 +8,7 @@
 # available at https://www.pycom.io/opensource/licensing
 #
 
-import usocket
+#import usocket
 import socket
 import machine
 import math

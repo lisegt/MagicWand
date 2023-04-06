@@ -1377,3 +1377,28 @@ JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't fin
 
 ###!!! [Child][MessageChannel::SendAndWait] Error: Channel error: cannot send/recv
 
+1680774672628	geckodriver	INFO	Listening on 127.0.0.1:56544
+1680774673152	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/69/_f88qbrj019f4xjr0sp7sknh0000gn/T/rust_mozprofilebAEjso"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1680774673792	Marionette	INFO	Marionette enabled
+1680774674093	Marionette	INFO	Listening on port 56553
+console.error: "Warning: unrecognized command line flag -remote-allow-hosts\n"
+Read port: 56553
+WebDriver BiDi listening on ws://127.0.0.1:56545
+1680774674302	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /var/folders/69/_f88qbrj019f4xjr0sp7sknh0000gn/T/rust_mozprofilebAEjso/search.json.mozlz4", (void 0)))
+DevTools listening on ws://127.0.0.1:56545/devtools/browser/fb82e81a-875e-4639-8ad4-80ae16ed2461
+JavaScript warning: https://pagead2.googlesyndication.com/bg/Bo5p8DbEpWqq_61_uCYPeBu7T3aczz0WnYolkwB_A5I.js line 2 > eval line 3474 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/Bo5p8DbEpWqq_61_uCYPeBu7T3aczz0WnYolkwB_A5I.js line 2 > eval line 7285 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/Bo5p8DbEpWqq_61_uCYPeBu7T3aczz0WnYolkwB_A5I.js line 2 > eval line 3710 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/Bo5p8DbEpWqq_61_uCYPeBu7T3aczz0WnYolkwB_A5I.js line 2 > eval line 7397 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+Exiting due to channel error.
+Exiting due to channel error.
+Exiting due to channel error.
+Exiting due to channel error.
