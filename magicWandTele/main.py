@@ -22,6 +22,9 @@ etatLumiere = False
 
 index = liste.index(start_value)
 
+# Désactivation du clignotement de 'base' de la LED 
+pycom.heartbeat(False)
+
 # callback quand le client reçoit une réponse du broker MQTT
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))

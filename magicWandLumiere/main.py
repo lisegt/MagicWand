@@ -7,6 +7,9 @@ import pycom
 blanc = 0xFFFFFF
 noir = 0x000000
 
+# Désactivation du clignotement de 'base' de la LED 
+pycom.heartbeat(False)
+
 # callback quand le client reçoit une réponse du broker MQTT
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
