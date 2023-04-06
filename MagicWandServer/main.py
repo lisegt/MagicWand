@@ -8,7 +8,7 @@
 # available at https://www.pycom.io/opensource/licensing
 #
 
-#import usocket
+import usocket
 import socket
 import machine
 import math
@@ -26,12 +26,9 @@ from network import WLAN
 from mqtt import MQTTClient
 
 
-
-
-time.sleep(2)
 gc.enable()
 
-# setup rtc
+#setup rtc
 rtc = machine.RTC()
 rtc.ntp_sync("pool.ntp.org")
 utime.sleep_ms(750)
@@ -41,10 +38,13 @@ print('Adjusted from UTC to EST timezone', utime.localtime(), '\n')
 
 py = Pytrack()
 l76 = L76GNSS(py, timeout=30)
-acc = LIS2HH12()
+time.sleep(1)
 # sd = SD()
 # os.mount(sd, '/sd')
 # f = open('/sd/gps-record.txt', 'w')
+
+py = Pytrack()
+accelerometer = LIS2HH12()
 
 def sub_cb(topic, msg):
    print("found")
@@ -60,7 +60,6 @@ while not wlan.isconnected():
     time.sleep(2)
 print("Connected to WiFi\n")
 
-
 # Déclaration des topics
 mqtt_topic_roll = "paulort31@laposte.net/roll"
 mqtt_topic_pitch = "paulort31@laposte.net/pitch"
@@ -68,36 +67,39 @@ mqtt_topic_lumiere = "paulort31@laposte.net/lumiere"
 mqtt_topic_televiseur = "paulort31@laposte.net/televiseur"
 mqtt_topic_chaine = "paulort31@laposte.net/chaine"
 
-
+#Connexion au brocker MQTT sui MaQiaTTo
+print("connexion mqtt")
 client = MQTTClient("device_id", "maqiatto.com",user="paulort31@laposte.net", password="auzeville31", port=1883)
 
+print("subscribe mqtt")
 client.set_callback(sub_cb)
 client.connect()
 print("connected")
 client.subscribe(topic=mqtt_topic_roll)
 print("subbed")
 
+#Boucle infini
 while (True):
+    print("boucle")
 
-    pitch = int(acc.pitch())
-    roll = int(acc.roll())
-    acceleration = int(acc.acceleration())
-    acceleration_x = acceleration[0]
-    acceleration_y = acceleration[1]
-    acceleration_z = acceleration[2]
+    #Récupération des données capteur
+    roll = accelerometer.roll()
+    pitch = accelerometer.pitch()
+    x, y, z = accelerometer.acceleration()
+
+    #Envoi des données sur les topics
+    client.publish(topic=mqtt_topic_lumiere, msg=str(x))
+    client.publish(topic=mqtt_topic_televiseur, msg=str(y))
+    client.publish(topic=mqtt_topic_chaine, msg=str(z))
     client.publish(topic=mqtt_topic_roll, msg=str(roll))
-    client.publish(topic=mqtt_topic_lumiere, msg="ON")
+    client.publish(topic=mqtt_topic_pitch, msg=str(pitch))
 
-    # mqtt_client.publish(mqtt_topic_roll, payload=str(roll),qos=0, retain=True)
-    # mqtt_client.publish(mqtt_topic_pitch, payload=str(pitch),qos=0, retain=True)
-    # mqtt_client.publish(mqtt_topic_lumiere, payload=str(acceleration_x),qos=0, retain=True)
-    # mqtt_client.publish(mqtt_topic_televiseur, payload=str(acceleration_y),qos=0, retain=True)
-    # mqtt_client.publish(mqtt_topic_chaine, payload=str(acceleration_z),qos=0, retain=True)
+    #Print pour vérifier les données
+    print("Acceleration X: {:.2f}, Y: {:.2f}, Z: {:.2f}".format(x, y, z))
+    print("Roll: {:.2f} deg, Pitch: {:.2f} deg".format(roll, pitch))
 
+    time.sleep(1)
 
-    liste = [pitch,roll,acceleration_x,acceleration_y,acceleration_z]
-    print(liste)
-    
 # Arrêt du client MQTT
 mqtt_client.loop_stop()
 mqtt_client.disconnect()
