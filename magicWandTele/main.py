@@ -52,7 +52,6 @@ def on_gestion_chaine_message(client, userdata, msg):
     etatChaine = msg.payload.decode()
 
     if etatChaine == "Monter":
-
         index += 1
         if index == len(liste):
             # Revenir au début de la liste si on atteint la fin
