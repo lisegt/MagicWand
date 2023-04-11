@@ -71,7 +71,7 @@ client = MQTTClient("device_id", "loraserver.tetaneutral.net")
 client.connect()
 print("connected")
 client.set_callback(sub_cb)
-client.subscribe(topic="teste")
+client.subscribe(topic=mqtt_topic_tele)
 print("subbed")
 
 # Désactivation du clignotement de 'base' de la LED 
