@@ -1,6 +1,7 @@
-import socket
-import time
 from mqtt import MQTTClient
+from network import WLAN
+import machine
+import time
 import pycom
 
 # Variables pour les couleurs de la LED
@@ -23,57 +24,68 @@ index = liste.index(start_value)
 # Désactivation du clignotement de 'base' de la LED 
 pycom.heartbeat(False)
 
-# callback quand le client reçoit une réponse du broker MQTT
-def on_connect(client, userdata, flags, rc):
-    print("Connected with result code "+str(rc))
-
-    # Subscribing in on_connect() means that if we lose the connection and
-    # reconnect then subscriptions will be renewed.
-    client.subscribe("gestion_televiseur")
-
-# réception d'un message sur le topic lumiere
-def on_gestion_televiseur_message(client, userdata, msg):
-
-    global index
-    index = index % len(liste)
-
-    etatTele = msg.payload.decode()
-    print(msg.topic+" "+str(msg.payload))
-
-    # allumage/extinction de la TV
-    if etatTele == "ON":
+def sub_cb(topic, msg):
+    print("found")
+    print(msg.decode())
+    if msg.decode() == "ON":
+        print("test")
         pycom.rgbled(rouge)
 
-    elif etatTele == "OFF":
+    elif msg.decode() == "OFF":
         pycom.rgbled(noir)
-
-    # gestion des chaînes
-    if etatTele == "Monter":
-
+    
+    elif msg.decode() == "Monter":
         index += 1
         if index == len(liste):
             # Revenir au début de la liste si on atteint la fin
             index = 0
-        print("Chaine +1") 
+        print("Chaine +1")
+        pycom.rgbled(liste[index])
+        time.sleep(2)
 
-    elif etatTele == "Descendre":
-
+    elif msg.decode() == "Descendre":
         index -= 1
         if index < 0:
             # Revenir à la fin de la liste si on atteint le début
             index = len(liste) - 1 
         print("Chaine -1")
+        pycom.rgbled(liste[index])
+        time.sleep(2)
 
-    pycom.rgbled(liste[index])
+
+wlan = WLAN(mode=WLAN.STA)
+#wlan.connect("yourwifinetwork", auth=(WLAN.WPA2, "wifipassword"), timeout=5000)
+wlan.connect(ssid="WiFi-Paul", auth=(WLAN.WPA2, "sqoualala"))
+
+while not wlan.isconnected():
+    #machine.idle()
+    print(".",end="")
     time.sleep(2)
-    
+print("Connected to WiFi\n")
+
+# Déclaration des topics
+mqtt_topic_tele = "gestion_tele"
 
 # Initilisation du client MQTT
 client = MQTTClient("device_id", "loraserver.tetaneutral.net")
 client.connect()
 print("connected")
-client.set_callback(on_gestion_televiseur_message)
-client.subscribe(topic="gestion_televiseur")
+client.set_callback(sub_cb)
+client.subscribe(topic="teste")
 print("subbed")
 
-client.loop_forever()
+# Désactivation du clignotement de 'base' de la LED 
+pycom.heartbeat(False)
+
+# # réception d'un message sur le topic lumiere
+# def on_gestion_lumiere_message(client, userdata, msg):
+#     etatLumiere = msg.payload.decode()
+#     print(msg.topic+" "+str(msg.payload))
+
+#   
+
+while True:
+    client.check_msg()
+    time.sleep(1)
+
+client.disconnect()
