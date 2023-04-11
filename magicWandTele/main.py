@@ -10,7 +10,6 @@ orange = 0xFF9900
 bleu = 0x0000FF
 violet = 0x9900FF
 noir = 0x000000
-blanc = 0xFFFFFF
 
 liste = [rouge, bleu, vert, orange, violet]
 start_value = rouge
