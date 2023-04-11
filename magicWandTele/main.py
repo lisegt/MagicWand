@@ -38,7 +38,7 @@ def on_connect(client, userdata, flags, rc):
 def on_gestion_televiseur_message(client, userdata, msg):
 
     global index
-    current_index = index % len(liste)
+    index = index % len(liste)
 
     etatTele = msg.payload.decode()
     print(msg.topic+" "+str(msg.payload))
@@ -67,7 +67,7 @@ def on_gestion_televiseur_message(client, userdata, msg):
             index = len(liste) - 1 
         print("Chaine -1")
 
-    pycom.rgbled(liste[current_index])
+    pycom.rgbled(liste[index])
     time.sleep(2)
     
 
