@@ -32,33 +32,34 @@ def on_connect(client, userdata, flags, rc):
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
     client.subscribe("paulort31@laposte.net/gestion_televiseur")
-    client.subscribe("paulort31@laposte.net/gestion_chaine")
+    #client.subscribe("paulort31@laposte.net/gestion_chaine")
 
 # réception d'un message sur le topic lumiere
 def on_gestion_televiseur_message(client, userdata, msg):
+
+    global index
+    index = index % len(liste)
+
     etatTele = msg.payload.decode()
     print(msg.topic+" "+str(msg.payload))
 
+    # allumage/extinction de la TV
     if etatTele == "ON":
         pycom.rgbled(rouge)
 
     elif etatTele == "OFF":
         pycom.rgbled(noir)
 
-def on_gestion_chaine_message(client, userdata, msg):
-    global index
-    current_index = index % len(liste)
+    # gestion des chaînes
+    if etatTele == "Monter":
 
-    etatChaine = msg.payload.decode()
-
-    if etatChaine == "Monter":
         index += 1
         if index == len(liste):
             # Revenir au début de la liste si on atteint la fin
             index = 0
         print("Chaine +1") 
 
-    elif etatChaine == "Descendre":
+    elif etatTele == "Descendre":
 
         index -= 1
         if index < 0:
@@ -66,15 +67,16 @@ def on_gestion_chaine_message(client, userdata, msg):
             index = len(liste) - 1 
         print("Chaine -1")
 
-    pycom.rgbled(liste[current_index])
+    pycom.rgbled(liste[index])
     time.sleep(2)
+    
 
 # Initilisation du client MQTT
 client = mqtt.Client()
 client.username_pw_set(username="paulort31@laposte.net",password="auzeville31")
 client.on_connect = on_connect
 client.message_callback_add("paulort31@laposte.net/gestion_televiseur", on_gestion_televiseur_message)
-client.message_callback_add("paulort31@laposte.net/gestion_chaine", on_gestion_chaine_message)
+#client.message_callback_add("paulort31@laposte.net/gestion_chaine", on_gestion_chaine_message)
 
 client.connect("maqiatto.com", 1883, 60)
 
