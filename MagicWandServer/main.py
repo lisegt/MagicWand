@@ -54,7 +54,7 @@ def sub_cb(topic, msg):
 
 wlan = WLAN(mode=WLAN.STA)
 #wlan.connect("yourwifinetwork", auth=(WLAN.WPA2, "wifipassword"), timeout=5000)
-wlan.connect(ssid="Aymard's Galaxy A32", auth=(WLAN.WPA2, "marionma"))
+wlan.connect(ssid="WiFi-Paul", auth=(WLAN.WPA2, "sqoualala"))
 
 while not wlan.isconnected():
     #machine.idle()
@@ -71,7 +71,6 @@ mqtt_topic_chaine = "paulort31@laposte.net/chaine"
 
 mqtt_topic_gestion_lumiere = "paulort31@laposte.net/gestion_lumiere"
 mqtt_topic_gestion_televiseur = "paulort31@laposte.net/gestion_televiseur"
-mqtt_topic_gestion_chaine = "paulort31@laposte.net/gestion_chaine"
 
 #Connexion au brocker MQTT sui MaQiaTTo
 print("connexion mqtt")
@@ -81,66 +80,59 @@ print("subscribe mqtt")
 client.set_callback(sub_cb)
 client.connect()
 print("connected")
-client.subscribe(topic=mqtt_topic_roll)
-print("subbed")
 
 #Boucle infini
 while (True):
-    print("boucle")
-
     #Récupération des données capteur
     roll = accelerometer.roll()
     pitch = accelerometer.pitch()
     x, y, z = accelerometer.acceleration()
 
     if (roll > -30 and roll < 30) and (pitch > -30 and pitch < 30):
-        if x > 0.2 and etatLumiere == False:
+        if x > 0.35 and etatLumiere == False:
             client.publish(topic=mqtt_topic_gestion_lumiere, msg="ON")
             etatLumiere = True
             print("Lumiere Allumee")
+            time.sleep(2)
 
-        elif x > 0.2 and etatLumiere == True:
+        elif x > 0.35 and etatLumiere == True:
             client.publish(topic=mqtt_topic_gestion_lumiere, msg="OFF")
             etatLumiere = False
             print("Lumiere Eteinte")
+            time.sleep(2)
 
-        if y > 0.2 and etatTele == False:
+        if y > 0.35 and etatTele == False:
             client.publish(topic=mqtt_topic_gestion_televiseur, msg="ON")
             etatTele = True
             print("Tele Allumee")
+            time.sleep(2)
 
-        elif y > 0.2 and etatTele == True:
+        elif y > 0.35 and etatTele == True:
             client.publish(topic=mqtt_topic_gestion_televiseur, msg="OFF")
             etatTele = False
             print("Tele Eteinte")
+            time.sleep(2)
         
         if etatTele == True:
-    
-            if z > 1.2:
+            if z > 1.35:
                 client.publish(topic=mqtt_topic_gestion_televiseur, msg="Monter")
                 print("Chaine +1")  
-                
-            elif z < 0.8:
+                time.sleep(2)
+            elif z < 0.65:
                 client.publish(topic=mqtt_topic_gestion_televiseur, msg="Descendre")
                 print("Chaine -1")
-            time.sleep(1)
-        else:
-            print("Veuillez allumer le téléviseur")
-
-
+                time.sleep(2)
 
     #Envoi des données sur les topics
-    # client.publish(topic=mqtt_topic_lumiere, msg=str(x))
-    # client.publish(topic=mqtt_topic_televiseur, msg=str(y))
-    # client.publish(topic=mqtt_topic_chaine, msg=str(z))
-    # client.publish(topic=mqtt_topic_roll, msg=str(roll))
-    # client.publish(topic=mqtt_topic_pitch, msg=str(pitch))
+    client.publish(topic=mqtt_topic_lumiere, msg=str(x))
+    client.publish(topic=mqtt_topic_televiseur, msg=str(y))
+    client.publish(topic=mqtt_topic_chaine, msg=str(z))
+    client.publish(topic=mqtt_topic_roll, msg=str(roll))
+    client.publish(topic=mqtt_topic_pitch, msg=str(pitch))
 
     #Print pour vérifier les données
     print("Acceleration X: {:.2f}, Y: {:.2f}, Z: {:.2f}".format(x, y, z))
     print("Roll: {:.2f} deg, Pitch: {:.2f} deg".format(roll, pitch))
-
-    time.sleep(1)
 
 # Arrêt du client MQTT
 mqtt_client.loop_stop()
